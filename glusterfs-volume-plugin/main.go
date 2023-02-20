@@ -45,11 +45,15 @@ func (p *gfsDriver) MountOptions(req *volume.CreateRequest) []string {
 		for _, server := range p.servers {
 			args = append(args, "-s", server)
 		}
+		// SS: adding global option to allow posix ACL
+		args = append(args, "--acl")
 		args = AppendVolumeOptionsByVolumeName(args, req.Name)
 	} else if serversDefinedInOpts {
 		for _, server := range strings.Split(servers, ",") {
 			args = append(args, "-s", server)
 		}
+		// SS: adding global option to allow posix ACL		
+		args = append(args, "--acl")		
 		args = AppendVolumeOptionsByVolumeName(args, req.Name)
 	} else {
 		args = strings.Split(glusteropts, " ")
