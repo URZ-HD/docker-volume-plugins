@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"strconv"
 
 	"github.com/docker/go-plugins-helpers/volume"
 	mountedvolume "github.com/marcelo-ochoa/docker-volume-plugins/mounted-volume"
@@ -38,6 +39,7 @@ func (p *gfsDriver) MountOptions(req *volume.CreateRequest) []string {
 
 	servers, serversDefinedInOpts := req.Options["servers"]
 	glusteropts, _ := req.Options["glusteropts"]
+	enable_acl, _ := strconv.ParseBool(req.Options["acl"])
 
 	var args []string
 
@@ -46,14 +48,18 @@ func (p *gfsDriver) MountOptions(req *volume.CreateRequest) []string {
 			args = append(args, "-s", server)
 		}
 		// SS: adding global option to allow posix ACL
-		args = append(args, "--acl")
+		if enable_acl {
+			args = append(args, "--acl")
+		}
 		args = AppendVolumeOptionsByVolumeName(args, req.Name)
 	} else if serversDefinedInOpts {
 		for _, server := range strings.Split(servers, ",") {
 			args = append(args, "-s", server)
-		}
+		}		
 		// SS: adding global option to allow posix ACL		
-		args = append(args, "--acl")		
+		if enable_acl {
+			args = append(args, "--acl")		
+		}
 		args = AppendVolumeOptionsByVolumeName(args, req.Name)
 	} else {
 		args = strings.Split(glusteropts, " ")

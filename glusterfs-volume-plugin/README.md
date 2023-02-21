@@ -69,6 +69,19 @@ This passes the `driver_opts.glusteropts` to the `glusterfs` command followed by
 
 The value of `name` will not be used for mounting; the value of `driver_opts.glusterfsopts` is expected to have all the volume connection information.
 
+### Using POSIX ACLs
+
+To enable POSIX ACLs on `glusterfs` you have to enable this feature explicitly with `driver_opts.acl`:
+
+    volumes:
+      sample:
+        driver: glusterfs
+        driver_opts:
+          acl: "true"
+        name: "whatever"
+
+This will pass `--acl` option to `glusterfs` command.
+
 ## Testing outside the swarm
 
 This is an example of mounting and testing a store outside the swarm.  It is assuming the server is called `store1` and the volume name is `myvol`.
